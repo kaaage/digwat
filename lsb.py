@@ -28,7 +28,7 @@ def lsb_embed(cover_work, payload, watermarked_work):
     if len(samples) < len(w_bits):
         raise OverflowError("The payload data (%d bits) is too big for the cover audio (%d bits)!" % (len(w_bits), len(samples))) 
     
-    print "Embeddint %d bits in %s (%d samples)" % (len(w_bits), cover_work, len(samples))
+    print "Embedding %d bits in %s (%d samples)" % (len(w_bits), cover_work, len(samples))
     
     encoded_samples = []
     
@@ -103,7 +103,7 @@ if __name__ == "__main__":
             if len(sys.argv) > 3:
                 output = sys.argv[3]
     if len(message) == 0 or len(cover_audio) == 0 or len(output) == 0:
-        print "Wrong parameters."
+        print "Wrong parameters. Example: \"python lsb.py 'This is a hidden message.' cover_audio.wav watermarked_audio.wav\""
         exit(1)
     lsb_embed(cover_audio, message, output)
     
