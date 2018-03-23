@@ -16,8 +16,11 @@ def lsb_embed(cover_work, payload, watermarked_work):
     watermark = struct.unpack("%dB" % len(payload_str), payload_str)
     
     w_size = len(watermark)
-    w_bits = payload_to_bits((w_size,), 32)
+    w_bits = payload_to_bits((w_size,))
+    # print("watermark length: " + str(len(watermark)))
+    # print("w_bits: " + str(len(w_bits)))
     w_bits.extend(payload_to_bits(watermark))
+    # print("w_bits.extend: " + str(len(w_bits)))
     
     cover_audio = wave.open(cover_work, 'rb') 
     
@@ -60,6 +63,7 @@ def payload_to_bits(watermark, nbits=8):
     for byte in watermark:
         for i in range(0,nbits):
             w_bits.append( (byte & (2 ** i)) >> i )
+            print((byte & (2 ** i)) >> i)
     return w_bits
     
 def recover_embedded(watermarked_filepath):
@@ -72,7 +76,9 @@ def recover_embedded(watermarked_filepath):
     
     # determine how many watermark bytes we should look for
     w_bytes = 0
-    for (sample,i) in zip(samples[0:32], range(0,32)):
+    for (sample,i) in zip(samples[0:8], range(0,8)):
+        # print(sample, (sample & 1))
+        # -0101011 & 1
         w_bytes = w_bytes + ( (sample & 1) * (2 ** i))
     
     print "Recovering %d bytes of payload data from %s (%d samples)" % (w_bytes, watermarked_filepath, len(samples))
@@ -80,7 +86,7 @@ def recover_embedded(watermarked_filepath):
     payload = []
     
     for n in range(0, w_bytes):
-        w_byte_samples = samples[32 + (n * 8) : 32+((n+1) * 8)]
+        w_byte_samples = samples[8 + (n * 8) : 8+((n+1) * 8)]
         w_byte = 0
         for (sample, i) in zip(w_byte_samples, range(0,8)):
             w_byte = w_byte + ( (sample & 1) * (2**i) )
@@ -106,5 +112,15 @@ if __name__ == "__main__":
         print "Wrong parameters. Example: \"python lsb.py 'This is a hidden message.' cover_audio.wav watermarked_audio.wav\""
         exit(1)
     lsb_embed(cover_audio, message, output)
+
+    # if len(sys.argv) > 1:
+    #     output = sys.argv[1]
     
-    recover_embedded(output)
+    recovered_payload = recover_embedded(output)
+    # print(type(recovered_payload[0]))
+
+    recovered_watermark = ''
+    for c in recovered_payload:
+        recovered_watermark += chr(c)
+
+    print(recovered_watermark)
