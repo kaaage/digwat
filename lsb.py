@@ -119,8 +119,8 @@ if __name__ == "__main__":
     recovered_payload = recover_embedded(output)
     # print(type(recovered_payload[0]))
 
-    recovered_watermark = ''
-    for c in recovered_payload:
-        recovered_watermark += chr(c)
+    # recovered_watermark = ''
+    # for c in recovered_payload:
+    #     recovered_watermark += chr(c)
 
-    print(recovered_watermark)
+    print(watermark_to_string(recovered_payload))
