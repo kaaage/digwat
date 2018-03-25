@@ -63,7 +63,7 @@ def payload_to_bits(watermark, nbits=8):
     for byte in watermark:
         for i in range(0,nbits):
             w_bits.append( (byte & (2 ** i)) >> i )
-            print((byte & (2 ** i)) >> i)
+            # print((byte & (2 ** i)) >> i)
     return w_bits
     
 def recover_embedded(watermarked_filepath):
